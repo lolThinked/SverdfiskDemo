@@ -1,0 +1,31 @@
+body, .new-app{
+    background-color: #d0bdaa;
+    background-repeat: repeat;
+    background-image: url(images/download.png);
+}
+.topnav{
+    background-color:#0a0a0a;
+}
+.topnav a{
+    color:#cacaca;
+}
+.new-content-header-menu{
+    background-color: #b3a99b;
+}
+.new-content-header-menu a:hover{
+    background-color: #867979;
+}
+.new-content-header-menu a.active{
+    background-color: #867979;
+}
+.new-content-menu{
+    background-color: #efe7d4;
+}
+
+.topnav .login-container button{
+    background-color: #d0bdaa;
+    border-radius: 5px;
+}
+.new-content{
+    background-color: #efe7d4;
+}

@@ -1,0 +1,452 @@
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bordplassering</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <script>
+    //var preLoaded = JSON.parse({{obj|safe}});
+    let preLoaded = {{obj|safe}};
+    let allergiesFromServer = {{allergiesList|safe}};
+    console.log(preLoaded);
+    
+  </script>
+
+
+  <script src={{ url_for('static', filename='js/globals.js')}} ></script>
+  
+  <script src={{ url_for('static', filename='js/bordClasser.js')}} ></script>
+  <script src={{ url_for('static', filename='js/obstacleClass.js')}} ></script>
+  <script src={{ url_for('static', filename='js/functions.js')}} ></script>
+  <script src={{ url_for('static', filename='js/hideshowfunctions.js')}} ></script>
+  <script src={{ url_for('static', filename='js/onclickfunctions.js')}} ></script>
+  <script src={{ url_for('static', filename='js/roomDrawing.js')}} ></script>
+  <script src={{ url_for('static', filename='js/Allergy.js')}} ></script>
+  <script src={{ url_for('static', filename='js/PersonClass.js')}} ></script>
+  <script src={{ url_for('static', filename='js/Seat.js')}} ></script>
+  <script src={{ url_for('static', filename='js/ProjectClass.js')}} ></script>
+  <script src={{ url_for('static', filename='js/drawingObject.js')}} ></script>
+  <script src={{ url_for('static', filename='js/projectFunctions.js')}} ></script>
+  <script src={{ url_for('static', filename='js/newContentFunctions.js')}} ></script>
+  <script src={{ url_for('static', filename='js/worker.js')}} ></script>
+  <script>
+      
+      
+  </script>
+    
+
+  <link rel="stylesheet" href={{ url_for('static', filename='css/index.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/newApp.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/formstyle.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/header.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/modal.css')}} ></link>
+  
+  <link rel="stylesheet" href={{ url_for('static', filename='css/darkmode.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/newGui.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/weddingStyle.css')}} ></link>
+  <link rel="stylesheet" href={{ url_for('static', filename='css/demostyle.css')}} ></link>
+  
+  <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans|Roboto:100&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Assistant:200&display=swap" rel="stylesheet">
+  
+
+</head>
+
+<body onscroll="scale(event)" onresize="onDocumentResize(event)">
+    <div class="new-app" id="new-app">
+        
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Lagring</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body-left">
+                        <h3>Instillinger:</h3>
+                        <h3>Prosjekt: <input type="text" placeholder="Navn til prosjektet" id="modalInputName"></input></h3>
+                        <h4>Andre instillinger:</h4>
+                        <input type="checkbox">forhåndsinnstilling</input>
+                    </div>
+                    <div class="modal-body-right">
+                        <h3>Info om fra lagringen:</h3>
+                        <p class="modalStats">Navn: </p>
+                        <p class="modalStats">Antall gjester: </p>
+                        <p class="modalStats">Rom: </p>
+                        <p class="modalStats">Dato:</p>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <div class="clearfix">
+                        <button type="button" class="modalbtn" id="savebtnModal" onclick="modalSave()">Lagre</button>
+                        <button type="button" class="modalbtn"id="cancelbtnModal" onclick="modalClose()">Avbryt</button>
+                      </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        {% include '_topnav.html' %}
+        <div class="new-content" id="new-content">
+            <div class="new-content-header-menu" id="new-content-header-menu">
+                <a  onclick="newContentHeaderMenuSetActive(event)" id="nchm-saved">Lagrede oppsett</a>
+                <a class="active" onclick="newContentHeaderMenuSetActive(event)" id="nchm-new">Nytt oppsett</a>
+                <a onclick="newContentHeaderMenuSetActive(event)" id="nchm-user-settings">Instillinger</a>
+                <a onclick="newContentHeaderMenuSetActive(event)" id="nchm-login">Login</a>
+                <a onclick="newContentHeaderMenuSetActive(event)" id="nchm-create-project">Nytt Prosjekt</a>
+            </div>
+            <div class="new-content-menu" id="new-content-menu" >
+            
+            <!-- SAVED SETUPS -->
+                <div style="display: none;" class="saved-setups" id="saved-setups">
+                    <div class="saved-room-settings-container" id="saved-room-settings-container">
+                        <div class="saved-room-settings-container-info">
+                            <h1>Settings: </h1>
+                            <h2 id="visAtDuRedigerer"onclick="editOrLoad()" style="background-color: #0e0e0e;
+                            border: 1px solid #888888;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            padding: 10px;">Last inn</h2>
+                            <h2 id="bekreftSletting"onclick="confirmDeletePresets()" style="background-color: #0e0e0e;
+                            border: 1px solid #888888;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            float: right;
+                            padding: 10px;">SLETT</h2>
+                        </div>
+                        <div class="for-deleting-presets-div" id="for-deleting-presets-div">
+
+                        </div>
+                        
+                    </div>
+                    <div class="saved-room-container" id="saved-manehallen-container">
+                        <h1>Månehallen</h1>
+                        <div class="saved-room" id="saved-manehallen" onclick="loadPresetByClick(event)">
+                            <img src="static/images/Saved/Preset1.png" alt="Manehallen">
+                            <h4>Cafeén lagret 1</h4>
+                        </div>
+                    </div>
+                    <div class="saved-room-container" id="saved-soylehallen-container">
+                        <h1>Søylehallen</h1>
+                        <div class="saved-room" id="saved-soylehallen">
+                            <img src="static/images/Saved/Preset1.png" alt="Soylehallen">
+                            <h4>Cafeén lagret 1</h4>
+                        </div>
+                    </div>
+                    <div class="saved-room-container" id="saved-hovedhallen-container">
+                        <h1>Hovedhallen</h1>
+                        <div class="saved-room" id="saved-hovedhallen">
+                            <img src="static/images/Saved/Preset1.png" alt="Hovedhallen">
+                            <h4>Cafeén lagret 1</h4>
+                        </div>
+                    </div>
+                    <div class="saved-room-container" id="saved-cafe-container">
+                        <h1>Cafeén</h1>
+                        <div class="saved-room" id="saved-cafe">
+                            <img src="static/images/Saved/Preset1.png" alt="Cafe">
+                            <h4>Cafeén lagret 1</h4>
+                        </div>
+                    </div>
+                </div>
+            <!-- BLANK SETUPS -->
+                <div  class="blank-setups" id="blank-setups">
+                    <div class="blank-header">
+                        <h1>Velg rom (Bruk Nytt prosjekt istedet!)</h1>
+                        <h3>Her kan du velge et rom til å starte på et nytt blankt prosjekt</h3>
+                    </div>
+                    <div class="blank-room" id="blank-cafe" onclick="startTegner('Cafe')">
+                        <img src="static/images/menublank/16/cafe.jpg" alt="Cafe">
+                        <h2>Café</h2>
+                    </div>
+                    <div class="blank-room" id="blank-manehallen" onclick="startTegner('Manehallen')">                       
+                        <img src="static/images/menublank/16/manehallen.jpg" alt="Manehallen">
+                        <h2>Månehallen</h2>
+                    </div>
+                    <div class="blank-room" id="blank-soylehallen" onclick="startTegner('Soylehallen')">                        
+                        <img src="static/images/menublank/16/soylehallen.png" alt="Soylehallen">
+                        <h2>Søylehallen</h2>
+                    </div>
+                    <div class="blank-room" id="blank-hovedhallen" onclick="startTegner('Hovedhallen')">                        
+                        <img src="static/images/menublank/16/hovedhallen.jpg" alt="HovedHallen">
+                        <h2>Hovedhallen</h2>
+                    </div>
+                </div>
+
+            <!-- BLUEPRINT -->
+                <div class="user-settings" id="user-settings" style="display: none;">
+                    <div class="user-settings-header" id="user-settings-header">
+                        <h1>Instillinger</h1>
+                        <h3>Instillinger kommer snart</h3>
+                        <h2>Her kommer det fargeinstillinger for programmet snart!</h2>
+                    </div>
+                </div>
+            <!-- LOGIN -->
+                <div style="display: none;" class="login-content" id="login-content">
+                    <form name="login-form" id="login-form" class="login-form">
+                        <p>
+                            <input type="text" placeholder="Brukernavn" id="login-username">
+                        </p>
+                        <p>
+                            <input type="password" placeholder="Passord" id="login-password">
+                        </p>
+                        <p>
+                            <input type="submit" value="Login" id="login-submit">
+                            <button  id="login-continue-without-button">Fortsett uten å logge inn</button>
+                        </p>
+                    </form>
+                </div>
+
+            
+            <!-- BLANK SETUPS -->
+                <div  class="create-project" id="create-project" style="display: none;">
+                    <div class="create-project-step" id="cp-step-0">
+                        <div class="create-project-step-progress" id="project-progress-step-0">
+                            <h2>Start</h2>
+                            <h2>Velg Rom</h2>
+                            <h2>Gi Navn</h2>
+                            <h2>Slutt</h2>
+                        </div>
+                        <div class="create-project-step-container" id="create-project-step-container-0">
+                            <div class="create-project-step-info" id="create-project-step-info-0">
+                                <h1>Prosjekt</h1>
+                                <h3>Ved å følge veiledingen vil du kunne opprette et prosjekt!</h3>
+                                <div class="projects-container">
+                                    {% for project in projects %}
+                                        {% include '_project.html' %}
+                                    {% endfor %}
+                                </div>
+                                
+                            </div>
+                            <div class="create-project-step-content" id="create-project-step-content-0">
+                                <a href="#cp-step-1"><h2>Neste -></h2></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="create-project-step" id="cp-step-1">
+                        <div class="create-project-step-progress" id="project-progress-step-1">
+                            <h2>Start</h2>
+                            <h2>Velg Rom</h2>
+                            <h2>Gi Navn</h2>
+                            <h2>Slutt</h2>
+                        </div>
+
+                        
+                        <div class="create-project-step-container" id="create-project-step-container-1">
+                            <div class="create-project-step-info" id="create-project-step-info-1">
+                                <h1>Velg Rom</h1>
+                                <h3>Her kan du velge rommet til prosjektet ditt.</h3>
+    
+                            </div>
+                            <div class="create-project-step-content" id="create-project-step-content-1">
+                                <div class="create-project-select-room" id="create-project-select-room">
+                                    <div class="create-project-room" id="create-project-cafe" onclick="projectCreationSetRoom(event, 'Cafe')">
+                                        <img src="static/images/menublank/16/cafe.jpg" alt="Cafe">
+                                        <h2>Café</h2>
+                                    </div>
+                                    <div class="create-project-room" id="create-project-manehallen" onclick="projectCreationSetRoom(event,'Manehallen')">                       
+                                        <img src="static/images/menublank/16/manehallen.jpg" alt="Manehallen">
+                                        <h2>Månehallen</h2>
+                                    </div>
+                                    <div class="create-project-room" id="create-project-soylehallen" onclick="projectCreationSetRoom(event,'Soylehallen')">                        
+                                        <img src="static/images/menublank/16/soylehallen.png" alt="Soylehallen">
+                                        <h2>Søylehallen</h2>
+                                    </div>
+                                    <div class="create-project-room" id="create-project-hovedhallen" onclick="projectCreationSetRoom(event,'Hovedhallen')">                        
+                                        <img src="static/images/menublank/16/hovedhallen.jpg" alt="HovedHallen">
+                                        <h2>Hovedhallen</h2>
+                                    </div>
+                                </div>
+                                <h1 id="selected-room-for-project">Ikke Valgt enda</h1>
+                                <a href="#cp-step-2"><h2>Neste -></h2></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="create-project-step" id="cp-step-2">
+                        <div class="create-project-step-progress" id="project-progress-step-2">
+                            <h2>Start</h2>
+                            <h2>Velg Rom</h2>
+                            <h2>Gi Navn</h2>
+                            <h2>Slutt</h2>
+                        </div>
+                        
+                        <div class="create-project-step-container" id="create-project-step-container-2">
+                            <div class="create-project-step-info" id="create-project-step-info-2">
+                                <h1>Navn</h1>
+                                <h3>Her kan du gi prosjektet ditt et navn og dato.</h3>
+                            </div>
+                            <div class="create-project-step-content" id="create-project-step-content-2">
+                                <input type="text" name="create-project-name-input" id="create-project-name-input" placeholder="Ditt prosjekt">
+                                <input type="date" name="create-project-date-input" id="create-project-date-input">
+                                <a href="#cp-step-3"><h2>Neste -></h2></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="create-project-step" id="cp-step-3">
+                        <div class="create-project-step-progress" id="project-progress-step-3">
+                            <h2>Start</h2>
+                            <h2>Velg Rom</h2>
+                            <h2>Gi Navn</h2>
+                            <h2>Slutt</h2>
+                        </div>
+                        
+                        <div class="create-project-step-container" id="create-project-step-container-3">
+                            <div class="create-project-step-info" id="create-project-step-info-3">
+                                <h1>Slutte</h1>
+                                <h3>Her kan du opprette prosjektet ditt</h3>
+                            </div>
+                            <div class="create-project-step-content" id="create-project-step-content-3">
+                                <h1>Opprett prosjekt</h1>
+                                <button onclick="createProjectWithDataButton(event)">Klikk her for å oprette prosjektet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            <!-- MANAGE USER -->
+                <div class="help-page" id="help-page">
+                    
+                </div>    
+            <!-- MANAGE USER -->
+                <div class="manage-users" id="manage-users">
+
+                </div>
+            </div>
+        </div>
+        <div class="canvasGUI-Container">
+            
+            <div class="newGUI" id="new-GUI" style="display: none;" onclick="guiUpdate(event)" onmousedown="guiMouseDown(event)" onmouseup="guiMouseUp(event)">
+                <div class="gui-stats" id="gui-project-info">
+                    <div class="gui-header">
+                        <h1>Prosjekt</h1>
+                    </div>
+                    <div class="gui-container" id="gui-project-info-content">
+                    </div>
+                </div>
+                <div class="gui-stats" id="gui-table-info">
+                    <div class="gui-header">
+                        <h1>Bord</h1>
+                    </div>
+                    <div class="gui-container" id="gui-table-info-content">
+                    </div>
+                </div>
+
+                <div class="gui-stats" id="gui-stats" style="display:none;">
+                    <div class="gui-header">
+                        <h1>Statestikk</h1>
+                    </div>
+                    <div class="gui-container" id="GUI-Stats">
+                        <h3 class="counter-text" id="stats-langbord">Antall langbord:</h3>
+                        <h3 class="counter-text">Antall rundbord:</h3>
+                        <h3 class="counter-text">Antall sitteplasser:</h3>
+                    </div>
+                </div>
+                <div class="gui-person" id="gui-person">
+                    <div class="gui-header">
+                        <h1>Person</h1>
+                    </div>
+                    <div class="gui-container" id="GUI-Person">
+                        <input type="text" id="name-for-person" class="personInput" placeholder="Navn">
+                        <input type="text" id="surname-for-person" class="personInput" placeholder="Etternavn">
+                        <input type="number" min="0" id="age-for-person" class="personInput" placeholder="Alder">
+                        <input type="text" id="gender-for-person" class="personInput" placeholder="Kjønn">
+                        <div>
+                            <button onclick="makePerson()">Legg til [+]</button>
+                            <button onclick="changePerson()">Endre ✎</button>
+                        </div>
+                        <div class="allergyListDiv" id="allergyListDiv">
+
+                        </div>
+                        <form>
+                            <select id="allergy-for-person" class="personInput">
+                                <option value="alkohol">alkohol</option>
+                                <option value="Gluten">Gluten</option>
+                                <option value="Laktose">Laktose</option>
+                                <option value="Fisk">Fisk</option>
+                                <option value="Vegan">Vegan</option>
+                            </select>
+                            <button type="button" id="addAllergyToSelectedPerson" onclick="addAllergyFromSelectToPerson()"> [+] </button>
+                            
+                        </form>
+                        
+                        <h4 style="display: none;" id="IDPERSON"></h4>
+                    </div>
+                </div>
+                <div class="gui-utility" id="gui-utility">
+                    <div class="gui-header">
+                        <h1>Verktøy</h1>
+                    </div>
+                    <div class="gui-container">
+                        <h2 onclick="openSaveDialog()">Lagre</h2>
+                        <button onclick="saveProjectData()">Lagre Prosjekt</button>
+
+                    <!--<h2 onclick="saveCurrentTableSetupToText()">Lagre</h2>-->
+                        <h2 onclick="drawFrameForPrinting()">Skriv ut</h2>
+                        <h2 onclick="takeScreenshot()" id="takeScreenshotButton">Ta skjermbilde</h2>
+                        <br>
+                        <h2 onclick="addTable('lang')">Langbord [+]</h2>
+                        <h2 onclick="addTable('rund')">Rundbord [+]</h2>
+                        <h3>Bordfarge<input type="color" id="color-for-table" oninput="changeSelectedTableColor()"></h3>
+                        <h3>SeteFarge<input type="color" id="color-for-seat" oninput="changeSeatColor()"></h3>
+                    </div>
+                </div>
+                <div class="table-utility" id="table-utility">
+                    <div class="gui-header">
+                        <h1>Bordverktøy</h1>
+                    </div>
+                    
+                    <div class="gui-container" >
+                        <h2 onclick="rotateSelectedTables(30);">Roter (30°)</h2>
+                        <h2 onclick="rotateSelectedTables(-30);">Roter (-30°)</h2>
+                        <h2 onclick="deleteSelectedTables();">Slett bord</h2>
+                        <input type="text" id="name-for-table" placeholder="Navn til bordet" oninput="setNameForTable()">
+                        
+                    </div>
+                </div>
+                <h5 id="lagredeBord" ></h5>
+                <h1 onclick="retrieveOverview()">Retrieve Overview</h1>
+                <div class="screenshots-container" id="screenshots-container">
+                    <div class="gui-header">
+                        <h1>Screenhots</h1>
+                    </div>
+                    <div class="gui-container" id="screenshots-container-inner">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+          <!-- FOOTER -->
+        <div class="new-footer" id="new-footer">
+
+        </div>
+    </div>
+    <!-- <canvas id="canvas" class="canvas" style="display: none;" onmouseup="deleteBord(event)" onmousedown="setBord(event)" onmousemove="update(event)" >You need to update your browser to run canvas</canvas> -->
+    <canvas id="canvas" class="canvas" style="display: none;" >You need to update your browser to run canvas</canvas>
+    <canvas id="backgroundCanvas" class="backgroundCanvas" style="display: none;">You need to update your browser to run canvas</canvas>
+
+    
+    <img src="static/images/scratches-hd-png--2048.png" id="skrapeMerker" style="display: none;"></img>
+    
+    <!-- <img src="static/Ikoner/download.png" alt="download"> -->
+  <script>var myWorker = new Worker('{{ url_for('static', filename="js/worker.js")}}');</script>
+  <script src="static/js/index.js"></script>
+  
+  <script>
+      document.getElementById("create-project-date-input").value = new Date().toISOString;
+    if(preLoaded != 0){
+        loadSaveParam(preLoaded);
+    }
+
+    //retrieveOverview();
+    updatePresets();
+    
+    </script>
+ 
+  
+</body>
+</html>
